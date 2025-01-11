@@ -22,7 +22,7 @@
       display: none;
     }
 
-    #ytplayer {
+    iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -38,7 +38,12 @@
 <body>
   <div id="content">
     <h1 id="header">Friday Night!</h1>
-    <div id="ytplayer"></div>
+    <iframe 
+      id="ytplayer" 
+      src="https://www.youtube.com/embed/DfEnIFV2-mc?autoplay=1&controls=0&loop=1&playlist=DfEnIFV2-mc" 
+      frameborder="0" 
+      allowfullscreen>
+    </iframe>
   </div>
 
   <div id="sad-message">
@@ -47,7 +52,6 @@
   </div>
 
   <script>
-    // Helper function to determine if it's Friday Night (after 5 PM)
     function isFridayNight() {
       const now = new Date();
       const day = now.getDay(); // 0 = Sunday, 5 = Friday
@@ -58,24 +62,6 @@
     // Display content based on the time
     if (isFridayNight()) {
       document.getElementById('content').style.display = "block";
-
-      // Load the YouTube Player API code asynchronously
-      var tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/player_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      var player;
-      function onYouTubePlayerAPIReady() {
-        player = new YT.Player('ytplayer', {
-          videoId: 'DfEnIFV2-mc',
-          playerVars: {
-            controls: 0,
-            loop: 1,
-            playlist: 'DfEnIFV2-mc'
-          }
-        });
-      }
     } else {
       document.getElementById('sad-message').style.display = "block";
     }

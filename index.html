@@ -80,10 +80,11 @@
             mute: 1, // Start muted
           },
           events: {
-            onReady: (event) => {
+          ß  onReady: (event) => {
               setTimeout(() => {
-                player.unMute(); // Attempt to unmute after autoplay starts
-              }, 5000); // Delay unmute slightly
+                player.unMute(); // Attempt to unmute
+                player.playVideo(); // Force playback to resume
+              }, 1000); // Delay to avoid browser blocking
             },
           },
         });

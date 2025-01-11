@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,8 @@
       height: 100vh;
     }
 
-    #content, #sad-message {
+    #content,
+    #sad-message {
       display: none;
     }
 
@@ -35,6 +37,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="content">
     <h1 id="header">Friday Night!</h1>
@@ -71,11 +74,18 @@
           videoId: 'DfEnIFV2-mc',
           playerVars: {
             autoplay: 1,
-            mute: 0,
             controls: 0,
             loop: 1,
-            playlist: 'DfEnIFV2-mc'
-          }
+            playlist: 'DfEnIFV2-mc',
+            mute: 1, // Start muted
+          },
+          events: {
+            onReady: (event) => {
+              setTimeout(() => {
+                player.unMute(); // Attempt to unmute after autoplay starts
+              }, 1000); // Delay unmute slightly
+            },
+          },
         });
       }
     } else {
@@ -83,4 +93,5 @@
     }
   </script>
 </body>
+
 </html>

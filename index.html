@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,11 +15,11 @@
       padding: 0;
       display: flex;
       justify-content: center;
-      align-items: center;
       height: 100vh;
     }
 
-    #content, #sad-message {
+    #content,
+    #sad-message {
       display: none;
     }
 
@@ -30,25 +31,34 @@
       height: 100%;
     }
 
-    .sad-face {
-      font-size: 100px;
+    .tenor-gif-embed {
+      width: 600px;
+      height: auto;
+
+    #sad-message h1 {
+      margin: 20px 0;
+      /* Ensure proper spacing around the text */
+    }
     }
   </style>
 </head>
+
 <body>
   <div id="content">
     <h1 id="header">Friday Night!</h1>
-    <iframe 
-      id="ytplayer" 
-      src="https://www.youtube.com/embed/DfEnIFV2-mc?autoplay=1&controls=0&loop=1&playlist=DfEnIFV2-mc" 
-      frameborder="0" 
-      allowfullscreen>
+    <iframe id="ytplayer" src="https://www.youtube.com/embed/DfEnIFV2-mc?&controls=0&loop=1&playlist=DfEnIFV2-mc"
+      frameborder="0" allowfullscreen>
     </iframe>
   </div>
 
   <div id="sad-message">
     <h1>It's not Friday Night 😢</h1>
-    <div class="sad-face">☹️</div>
+    <div class="tenor-gif-embed" data-postid="18148683" data-share-method="host" data-aspect-ratio="1.77778"
+      data-width="100%">
+      <a href="https://tenor.com/view/yakuza-gif-18148683">Yakuza GIF</a> from <a
+        href="https://tenor.com/search/yakuza-gifs">Yakuza GIFs</a>
+    </div>
+    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
   </div>
 
   <script>
@@ -67,4 +77,5 @@
     }
   </script>
 </body>
+
 </html>

@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Is it Friday night?</title>
   <style>
     body {
@@ -67,7 +67,9 @@
       border-color: #777;
     }
 
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
@@ -82,14 +84,17 @@
           <div id="player"></div>
         </div>
       </div>
-      <div id="sad-message" class="hidden">
+      <div id="sad-message" style="display:none;">
         <h1>Not yet, kyodai</h1>
         <div class="video-wrapper">
-          <div id="playerSad"></div>
+          <iframe
+            src="https://www.youtube.com/embed/YcAHHKY3Y0I?autoplay=1&mute=0&playsinline=1&controls=0&loop=1&playlist=YcAHHKY3Y0I&modestbranding=1&rel=0"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>
         </div>
-        <div>
-          <button id="override-button" class="btn">I don't care</button>
-        </div>
+        <button id="override-button" class="btn">I don't care</button>
       </div>
     </div>
   </div>
@@ -104,14 +109,6 @@
 
     let player;
 
-    function switchVideo(videoId, loop = true) {
-      if (!player) return;
-      player.loadVideoById(videoId);
-      player.setLoop && player.setLoop(loop);
-      player.unMute();
-      player.playVideo();
-    }
-
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
         videoId: 'DfEnIFV2-mc',
@@ -123,8 +120,13 @@
           loop: 1,
           playlist: 'DfEnIFV2-mc',
           modestbranding: 1,
-          rel: 0
-        }
+          rel: 0,
+        },
+        events: {
+          onReady: (event) => {
+            event.target.playVideo();
+          },
+        },
       });
     }
 
@@ -137,24 +139,25 @@
       const header = document.getElementById('header');
 
       button.addEventListener('click', () => {
-        button.classList.add('hidden');
+        button.style.display = 'none';
         if (isFridayNight()) {
-          content.classList.remove('hidden');
-          switchVideo('DfEnIFV2-mc', true);
+          content.style.display = 'block';
+          player.unMute();
         } else {
-          sadMessage.classList.remove('hidden');
-          overrideButton.classList.remove('hidden');
-          switchVideo('YcAHHKY3Y0I', false);
+          sadMessage.style.display = 'block';
+          overrideButton.style.display = 'inline-block';
+          // sad iframe autoplays on its own
         }
       });
 
       overrideButton.addEventListener('click', () => {
-        sadMessage.classList.add('hidden');
-        content.classList.remove('hidden');
-        overrideMessage.classList.remove('hidden');
-        header.classList.add('hidden');
-        overrideButton.classList.add('hidden');
-        switchVideo('DfEnIFV2-mc', true);
+        sadMessage.style.display = 'none';
+        content.style.display = 'block';
+        overrideMessage.style.display = 'block';
+        header.style.display = 'none';
+        overrideButton.style.display = 'none';
+        player.unMute();
+        player.playVideo();
       });
     });
   </script>

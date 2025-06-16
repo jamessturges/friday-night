@@ -8,22 +8,39 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
       background-color: #282c34;
       color: white;
       margin: 0;
       padding: 0;
+    }
+
+    #wrapper {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 0;
+      text-align: center;
+    }
+
+    #splash {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100vw;
       height: 100vh;
+      margin: 0;
+      padding: 0;
     }
-
-    #content,
-    #sad-message {
-      display: none;
-    }
-
-    iframe {
+    .video-wrapper iframe, 
+    .video-wrapper #player {
       position: absolute;
       top: 0;
       left: 0;
@@ -31,39 +48,71 @@
       height: 100%;
     }
 
-    .tenor-gif-embed {
-      width: 600px;
-      height: auto;
+    /* Responsive GIF container */
+    .gif-wrapper {
+      position: relative;
+      width: 100vw;
+      max-width: none;
+      padding-top: 56.25%; /* 16:9 aspect ratio */
+      margin: 0;
+    }
+    .gif-wrapper .tenor-gif-embed,
+    .gif-wrapper .tenor-gif-embed iframe {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+    }
 
     #sad-message h1 {
       margin: 20px 0;
-      /* Ensure proper spacing around the text */
     }
+
+    .btn {
+      background-color: #222; /* Slightly lighter than black */
+      color: white;
+      font-size: 5rem;
+      padding: 10px 20px;
+      border: 2px solid #555; /* Add a border for separation */
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      display: inline-block;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
     }
+
+    .btn:hover {
+      background-color: #444; /* Change background color on hover */
+      border-color: #777; /* Change border color on hover */
+    }
+
+
   </style>
 </head>
 
 <body>
-  <div id="splash">
-    <div id="friday-button">Is it Friday night?</div>
-  </div>
-  <audio id="bg-audio" autoplay muted playsinline src="audio/friday-night.mp3" loop></audio>
-
-  <div id="content">
-    <h1 id="header">Friday Night!</h1>
-    <iframe id="ytplayer" src="https://www.youtube.com/embed/DfEnIFV2-mc?&controls=0&loop=1&playlist=DfEnIFV2-mc"
-      frameborder="0" allowfullscreen>
-    </iframe>
-  </div>
-
-  <div id="sad-message">
-    <h1>It's not Friday Night 😢</h1>
-    <div class="tenor-gif-embed" data-postid="18148683" data-share-method="host" data-aspect-ratio="1.77778"
-      data-width="100%">
-      <a href="https://tenor.com/view/yakuza-gif-18148683">Yakuza GIF</a> from <a
-        href="https://tenor.com/search/yakuza-gifs">Yakuza GIFs</a>
+  <div id="wrapper">
+    <div id="splash">
+      <div id="friday-button" class="btn">Is it Friday night?</div>
+      <div id="content" style="display: none;">
+        <h1 id="header" style="display: none;">Yes!</h1>
+        <h1 id="override-message" style="display: none;">You got it, boss</h1>
+        <div class="video-wrapper"><div id="player"></div></div>
+      </div>
+      <div id="sad-message" style="display: none;">
+        <h1>Not yet, kyodai</h1>
+        <div class="gif-wrapper">
+          <div class="tenor-gif-embed" data-postid="18148683" data-share-method="host" data-aspect-ratio="1.77778"
+            data-width="100%">
+            <a href="https://tenor.com/view/yakuza-gif-18148683">Yakuza GIF</a>
+          </div>
+        </div>
+        <div>
+          <button id="override-button" class="btn">I don't care</button>
+        </div>
+      </div>
     </div>
-    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
   </div>
 
   <script>
@@ -74,13 +123,70 @@
       return day === 5 && hour >= 17; // Friday night starts at 5 PM
     }
 
-    // Display content based on the time
-    if (isFridayNight()) {
-      document.getElementById('content').style.display = "block";
-    } else {
-      document.getElementById('sad-message').style.display = "block";
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      // Nothing here; player will be created after tap
     }
+
+    function initYouTubePlayer(hideIds = []) {
+      player = new YT.Player('player', {
+        videoId: 'DfEnIFV2-mc',
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          loop: 1,
+          playlist: 'DfEnIFV2-mc',
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event) => {
+            event.target.unMute();
+            event.target.playVideo();
+            hideIds.forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.style.display = 'none';
+            });
+          }
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const button = document.getElementById('friday-button');
+      const content = document.getElementById('content');
+      const sadMessage = document.getElementById('sad-message');
+      const overrideButton = document.getElementById('override-button');
+      const overrideMessage = document.getElementById('override-message');
+
+      button.addEventListener('click', () => {
+        button.style.display = 'none';
+        if (isFridayNight()) {
+          content.style.display = 'block';
+          document.getElementById('header').style.display = 'block';
+
+          initYouTubePlayer(['header']);
+
+        } else {
+          sadMessage.style.display = 'block';
+          overrideButton.style.display = 'inline-block';
+        }
+      });
+
+      overrideButton.addEventListener('click', () => {
+        sadMessage.style.display = 'none';
+        content.style.display = 'block';
+        overrideMessage.style.display = 'block';
+        document.getElementById('header').style.display = 'none';
+        overrideButton.style.display = 'none';
+
+        initYouTubePlayer(['override-message']);
+      });
+    });
   </script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 </body>
 
 </html>

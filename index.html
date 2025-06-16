@@ -87,12 +87,7 @@
       <div id="sad-message" style="display:none;">
         <h1>Not yet, kyodai</h1>
         <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/YcAHHKY3Y0I?autoplay=1&mute=0&playsinline=1&controls=0&loop=1&playlist=YcAHHKY3Y0I&modestbranding=1&rel=0"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen>
-          </iframe>
+          <div id="playerSad"></div>
         </div>
         <button id="override-button" class="btn">I don't care</button>
       </div>
@@ -107,27 +102,26 @@
       return day === 5 && hour >= 17;
     }
 
-    let player;
+    let player, playerSad;
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        videoId: 'DfEnIFV2-mc',
+    function buildPlayer(container, videoId, loop = false) {
+      return new YT.Player(container, {
+        videoId,
         playerVars: {
           autoplay: 1,
-          mute: 1,
+          mute: 0,
           playsinline: 1,
           controls: 0,
-          loop: 1,
-          playlist: 'DfEnIFV2-mc',
+          loop: loop ? 1 : 0,
+          playlist: loop ? videoId : undefined,
           modestbranding: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: (event) => {
-            event.target.playVideo();
-          },
-        },
+          rel: 0
+        }
       });
+    }
+
+    function onYouTubeIframeAPIReady() {
+      // no auto-creation here, handled on user gesture
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -142,22 +136,22 @@
         button.style.display = 'none';
         if (isFridayNight()) {
           content.style.display = 'block';
-          player.unMute();
+          if (!player) player = buildPlayer('player', 'DfEnIFV2-mc', true);
         } else {
           sadMessage.style.display = 'block';
           overrideButton.style.display = 'inline-block';
-          // sad iframe autoplays on its own
+          if (!playerSad) playerSad = buildPlayer('playerSad', 'YcAHHKY3Y0I');
         }
       });
 
       overrideButton.addEventListener('click', () => {
         sadMessage.style.display = 'none';
+        if (playerSad) { playerSad.stopVideo(); }
         content.style.display = 'block';
         overrideMessage.style.display = 'block';
         header.style.display = 'none';
         overrideButton.style.display = 'none';
-        player.unMute();
-        player.playVideo();
+        if (!player) player = buildPlayer('player', 'DfEnIFV2-mc', true);
       });
     });
   </script>

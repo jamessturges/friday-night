@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Friday Night!</title>
+  <title>Is it Friday night?</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #282c34;
+      background-color: black;
       color: white;
       margin: 0;
       padding: 0;
@@ -39,7 +39,8 @@
       margin: 0;
       padding: 0;
     }
-    .video-wrapper iframe, 
+
+    .video-wrapper iframe,
     .video-wrapper #player {
       position: absolute;
       top: 0;
@@ -48,46 +49,25 @@
       height: 100%;
     }
 
-    /* Responsive GIF container */
-    .gif-wrapper {
-      position: relative;
-      width: 100vw;
-      max-width: none;
-      padding-top: 56.25%; /* 16:9 aspect ratio */
-      margin: 0;
-    }
-    .gif-wrapper img {
-      position: absolute !important;
-      top: 0;
-      left: 0;
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover;
-    }
-
-    #sad-message h1 {
-      margin: 20px 0;
-    }
-
     .btn {
-      background-color: #222; /* Slightly lighter than black */
+      background-color: #222;
       color: white;
       font-size: 5rem;
       padding: 10px 20px;
-      border: 2px solid #555; /* Add a border for separation */
+      border: 2px solid #555;
       border-radius: 5px;
       cursor: pointer;
       text-align: center;
       display: inline-block;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
     }
 
     .btn:hover {
-      background-color: #444; /* Change background color on hover */
-      border-color: #777; /* Change border color on hover */
+      background-color: #444;
+      border-color: #777;
     }
 
-
+    .hidden { display: none; }
   </style>
 </head>
 
@@ -95,15 +75,17 @@
   <div id="wrapper">
     <div id="splash">
       <div id="friday-button" class="btn">Is it Friday night?</div>
-      <div id="content" style="display: none;">
-        <h1 id="header" style="display: none;">Yes!</h1>
-        <h1 id="override-message" style="display: none;">You got it, boss</h1>
-        <div class="video-wrapper"><div id="player"></div></div>
+      <div id="content" class="hidden">
+        <h1 id="header">Yes! You finally made it!</h1>
+        <h1 id="override-message" class="hidden">You got it, boss</h1>
+        <div class="video-wrapper">
+          <div id="player"></div>
+        </div>
       </div>
-      <div id="sad-message" style="display: none;">
+      <div id="sad-message" class="hidden">
         <h1>Not yet, kyodai</h1>
-        <div class="gif-wrapper">
-          <img src="https://media.tenor.com/images/18148683.gif" alt="Yakuza GIF"/>
+        <div class="video-wrapper">
+          <div id="playerSad"></div>
         </div>
         <div>
           <button id="override-button" class="btn">I don't care</button>
@@ -115,23 +97,21 @@
   <script>
     function isFridayNight() {
       const now = new Date();
-      const day = now.getDay(); // 0 = Sunday, 5 = Friday
-      const hour = now.getHours(); // 0 = midnight, 23 = 11 PM
-      return day === 5 && hour >= 17; // Friday night starts at 5 PM
+      const day = now.getDay();
+      const hour = now.getHours();
+      return true// day === 5 && hour >= 17;
     }
 
     let player;
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        videoId: 'DfEnIFV2-mc',
+    function initYouTubePlayer(videoId, containerId = 'player') {
+      player = new YT.Player(containerId, {
+        videoId: videoId,
         playerVars: {
           autoplay: 1,
-          mute: 1,
+          mute: 0,
           playsinline: 1,
           controls: 0,
-          loop: 1,
-          playlist: 'DfEnIFV2-mc',
           modestbranding: 1,
           rel: 0
         },
@@ -154,21 +134,25 @@
         button.style.display = 'none';
         if (isFridayNight()) {
           content.style.display = 'block';
-          player.unMute();
+          initYouTubePlayer('DfEnIFV2-mc');
         } else {
           sadMessage.style.display = 'block';
           overrideButton.style.display = 'inline-block';
+          initYouTubePlayer('YcAHHKY3Y0I', 'playerSad');
         }
       });
 
       overrideButton.addEventListener('click', () => {
+        const sadIframe = sadMessage.querySelector('iframe');
+        if (sadIframe) {
+          sadIframe.src = '';
+        }
         sadMessage.style.display = 'none';
         content.style.display = 'block';
         overrideMessage.style.display = 'block';
         document.getElementById('header').style.display = 'none';
         overrideButton.style.display = 'none';
-
-        player.unMute();
+        initYouTubePlayer('DfEnIFV2-mc');
       });
     });
   </script>

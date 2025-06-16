@@ -105,6 +105,9 @@
     let player;
 
     function initYouTubePlayer(videoId, containerId = 'player') {
+      if (player) {
+        player.destroy();
+      }
       player = new YT.Player(containerId, {
         videoId: videoId,
         playerVars: {
@@ -132,29 +135,26 @@
       const sadMessage = document.getElementById('sad-message');
       const overrideButton = document.getElementById('override-button');
       const overrideMessage = document.getElementById('override-message');
+      const header = document.getElementById('header');
 
       button.addEventListener('click', () => {
-        button.style.display = 'none';
+        button.classList.add('hidden');
         if (isFridayNight()) {
-          content.style.display = 'block';
+          content.classList.remove('hidden');
           initYouTubePlayer('DfEnIFV2-mc');
         } else {
-          sadMessage.style.display = 'block';
-          overrideButton.style.display = 'inline-block';
+          sadMessage.classList.remove('hidden');
+          overrideButton.classList.remove('hidden');
           initYouTubePlayer('YcAHHKY3Y0I', 'playerSad');
         }
       });
 
       overrideButton.addEventListener('click', () => {
-        const sadIframe = sadMessage.querySelector('iframe');
-        if (sadIframe) {
-          sadIframe.src = '';
-        }
-        sadMessage.style.display = 'none';
-        content.style.display = 'block';
-        overrideMessage.style.display = 'block';
-        document.getElementById('header').style.display = 'none';
-        overrideButton.style.display = 'none';
+        sadMessage.classList.add('hidden');
+        content.classList.remove('hidden');
+        overrideMessage.classList.remove('hidden');
+        header.classList.add('hidden');
+        overrideButton.classList.add('hidden');
         initYouTubePlayer('DfEnIFV2-mc');
       });
     });

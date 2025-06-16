@@ -99,7 +99,7 @@
       const now = new Date();
       const day = now.getDay();
       const hour = now.getHours();
-      return true// day === 5 && hour >= 17;
+      return day === 5 && hour >= 17;
     }
 
     let player;
@@ -112,11 +112,14 @@
           mute: 0,
           playsinline: 1,
           controls: 0,
+          loop: 1,
+          playlist: videoId,
           modestbranding: 1,
           rel: 0
         },
         events: {
           onReady: (event) => {
+            event.target.unMute();
             event.target.playVideo();
           }
         }

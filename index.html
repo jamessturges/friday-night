@@ -139,6 +139,7 @@
           playlist: 'DfEnIFV2-mc',
           modestbranding: 1,
           rel: 0,
+          playsinline: 1,
         },
         events: {
           onReady: (event) => {
@@ -167,6 +168,9 @@
           document.getElementById('header').style.display = 'block';
 
           initYouTubePlayer(['header']);
+          // iOS user gesture play
+          player.unMute();
+          player.playVideo();
 
         } else {
           sadMessage.style.display = 'block';
@@ -182,6 +186,9 @@
         overrideButton.style.display = 'none';
 
         initYouTubePlayer(['override-message']);
+        // iOS user gesture play
+        player.unMute();
+        player.playVideo();
       });
     });
   </script>

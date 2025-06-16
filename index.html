@@ -56,13 +56,13 @@
       padding-top: 56.25%; /* 16:9 aspect ratio */
       margin: 0;
     }
-    .gif-wrapper .tenor-gif-embed,
-    .gif-wrapper .tenor-gif-embed iframe {
+    .gif-wrapper img {
       position: absolute !important;
       top: 0;
       left: 0;
       width: 100% !important;
       height: 100% !important;
+      object-fit: cover;
     }
 
     #sad-message h1 {
@@ -103,10 +103,7 @@
       <div id="sad-message" style="display: none;">
         <h1>Not yet, kyodai</h1>
         <div class="gif-wrapper">
-          <div class="tenor-gif-embed" data-postid="18148683" data-share-method="host" data-aspect-ratio="1.77778"
-            data-width="100%">
-            <a href="https://tenor.com/view/yakuza-gif-18148683">Yakuza GIF</a>
-          </div>
+          <img src="https://media.tenor.com/images/18148683.gif" alt="Yakuza GIF"/>
         </div>
         <div>
           <button id="override-button" class="btn">I don't care</button>
@@ -126,29 +123,21 @@
     let player;
 
     function onYouTubeIframeAPIReady() {
-      // Nothing here; player will be created after tap
-    }
-
-    function initYouTubePlayer(hideIds = []) {
       player = new YT.Player('player', {
         videoId: 'DfEnIFV2-mc',
         playerVars: {
           autoplay: 1,
+          mute: 1,
+          playsinline: 1,
           controls: 0,
           loop: 1,
           playlist: 'DfEnIFV2-mc',
           modestbranding: 1,
-          rel: 0,
-          playsinline: 1,
+          rel: 0
         },
         events: {
           onReady: (event) => {
-            event.target.unMute();
             event.target.playVideo();
-            hideIds.forEach(id => {
-              const el = document.getElementById(id);
-              if (el) el.style.display = 'none';
-            });
           }
         }
       });
@@ -165,13 +154,7 @@
         button.style.display = 'none';
         if (isFridayNight()) {
           content.style.display = 'block';
-          document.getElementById('header').style.display = 'block';
-
-          initYouTubePlayer(['header']);
-          // iOS user gesture play
           player.unMute();
-          player.playVideo();
-
         } else {
           sadMessage.style.display = 'block';
           overrideButton.style.display = 'inline-block';
@@ -185,15 +168,11 @@
         document.getElementById('header').style.display = 'none';
         overrideButton.style.display = 'none';
 
-        initYouTubePlayer(['override-message']);
-        // iOS user gesture play
         player.unMute();
-        player.playVideo();
       });
     });
   </script>
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 </body>
 
 </html>
